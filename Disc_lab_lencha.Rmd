@@ -1,0 +1,339 @@
+---
+title: "DisLesbinas"
+author: "MG"
+date: "`r Sys.Date()`"
+output: html_document
+
+---
+```{r setup, include=FALSE}
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+```
+
+# Tema
+Discriminacion de mujeres lesbianas en el mercasdo labora en Mexico
+
+
+## 1. Carga de los datos
+
+
+```{r liberias teoretico, eval=FALSE, include=FALSE}
+library(readxl)
+library(janitor)
+library(skimr)
+library(ggplot2)
+library(esquisse)
+
+install.packages("dplyr")
+library(dplyr)
+
+install.packages("dplyr")  # Wenn noch nicht installiert
+library(dplyr)  # Lade das Paket
+```
+
+
+
+```{r cargo de los datos}
+disc_lab<-read.csv("C:/Master/3. Semester/R/Dataset/disc_lab_lencha2.csv", header = TRUE, sep = ",")
+
+
+
+```
+
+```{r}
+
+
+
+disc_lab$P8_1 =as.character(disc_lab$P8_1)
+disc_lab$P8_1A =as.character(disc_lab$P8_1A)
+disc_lab$P9_1 =as.character(disc_lab$P9_1)
+
+disc_lab$P11_4_1=as.character(disc_lab$P11_4_1)
+disc_lab$P11_4_2=as.character(disc_lab$P11_4_2)
+disc_lab$P11_4_3=as.character(disc_lab$P11_4_3)
+disc_lab$P11_4_4=as.character(disc_lab$P11_4_4)
+disc_lab$P11_4_5=as.character(disc_lab$P11_4_5)
+disc_lab$P11_5_7=as.character(disc_lab$P11_5_7)
+
+disc_lab$P11_6_11=as.character(disc_lab$P11_6_11)
+disc_lab$P11_8_1=as.character(disc_lab$P11_8_1)
+disc_lab$P11_8_2=as.character(disc_lab$P11_8_2)
+disc_lab$P11_8_3=as.character(disc_lab$P11_8_3)
+disc_lab$P11_8_4=as.character(disc_lab$P11_8_4)
+disc_lab$P11_8_5=as.character(disc_lab$P11_8_5)
+
+
+
+disc_lab$P8_1 =as.numeric(disc_lab$P8_1)
+disc_lab$P8_1A =as.numeric(disc_lab$P8_1A)
+disc_lab$P9_1 =as.numeric(disc_lab$P9_1)
+
+disc_lab$P11_4_1=as.numeric(disc_lab$P11_4_1)
+disc_lab$P11_4_2=as.numeric(disc_lab$P11_4_2)
+disc_lab$P11_4_3=as.numeric(disc_lab$P11_4_3)
+disc_lab$P11_4_4=as.numeric(disc_lab$P11_4_4)
+disc_lab$P11_4_5=as.numeric(disc_lab$P11_4_5)
+
+disc_lab$P11_5_7=as.numeric(disc_lab$P11_5_7)
+
+
+disc_lab$P11_6_11=as.numeric(disc_lab$P11_6_11)
+disc_lab$P11_8_1=as.numeric(disc_lab$P11_8_1)
+disc_lab$P11_8_2=as.numeric(disc_lab$P11_8_2)
+disc_lab$P11_8_3=as.numeric(disc_lab$P11_8_3)
+disc_lab$P11_8_4=as.numeric(disc_lab$P11_8_4)
+disc_lab$P11_8_5=as.numeric(disc_lab$P11_8_5)
+
+table(disc_lab$P8_1)
+
+
+table(disc_lab$P11_4_1)
+table(disc_lab$P11_4_2)
+table(disc_lab$P11_4_3)
+table(disc_lab$P11_4_4)
+table(disc_lab$P11_4_5)
+table(disc_lab$P11_5_7)
+
+
+
+
+
+table(disc_lab$P8_1A)
+table(disc_lab$P8_1)
+
+
+table(disc_lab$P11_6_11)
+table(disc_lab$P11_8_1)
+table(disc_lab$P11_8_2)
+table(disc_lab$P11_8_3)
+table(disc_lab$P11_8_4)
+table(disc_lab$P11_8_5)
+
+```
+
+```{r}
+# Daten filtern für Frauen (P9_1 == 2) und lesbische/bisexuelle Frauen (P8_1 == 1 oder 3 und P8_1A == 1 oder 3)
+# Erweiterter Filter mit sexueller Orientierung (P8_1A) und der Bedingung P9_1 == 2
+frauen <- disc_lab %>%
+  filter(
+    P9_1 == 2 & 
+    P8_1A %in% c(1, 2, 3, 4) & 
+    P11_5_7 != "9" & 
+    P11_6_11 != "9"
+  )
+
+
+
+
+# Anzeigen der gefilterten Daten
+head(frauen)
+
+
+
+table(frauen$P11_4_1)
+table(frauen$P11_4_2)
+table(frauen$P11_5_7)
+
+
+
+
+
+```
+
+```{r}
+# Codieren: 1 für "Sí", 0 für "Nein" und "No aplica"
+frauen$dicriminacion_lab1 <- ifelse(frauen$P11_4_1 == 1, 1, 0)
+frauen$dicriminacion_lab2 <- ifelse(frauen$P11_4_2 == 1, 1, 0)
+frauen$dicriminacion_lab3 <- ifelse(frauen$P11_4_3 == 1, 1, 0)
+frauen$dicriminacion_lab4 <- ifelse(frauen$P11_4_4 == 1, 1, 0)
+frauen$dicriminacion_lab5 <- ifelse(frauen$P11_4_5 == 1, 1, 0)
+frauen$dicriminacion_lab6 <- ifelse(frauen$P11_5_7 == 1, 1, 0)
+
+
+table(frauen$dicriminacion_6)
+```
+
+```{r}
+
+
+
+# Erstellen einer Liste der Variablen
+variables <- c("dicriminacion_1", "dicriminacion_2", "dicriminacion_3", 
+               "dicriminacion_4", "dicriminacion_5", "dicriminacion_6")
+
+# Plotting mit einer Schleife
+par(mfrow=c(2,3))  # 2 Zeilen und 3 Spalten für die Darstellung der Diagramme
+
+
+
+}
+
+```
+
+```{r}
+# Häufigkeitstabelle für jede Variable
+counts <- sapply(variables, function(var) table(frauen[[var]]))
+
+# Gestapeltes Balkendiagramm
+barplot(counts, beside = FALSE, 
+        col = c("lightblue", "salmon"), 
+        legend.text = c("0", "1"),
+        main = "Vergleich der Häufigkeit von 0 und 1",
+        xlab = "Variablen", ylab = "Häufigkeit")
+
+```
+```{r}
+# Pie Charts für jede Variable
+for (var in variables) {
+  pie(table(frauen[[var]]), 
+      main = paste("Verteilung von", var),
+      col = c("lightblue", "salmon"),
+      labels = paste(names(table(frauen[[var]])), ":", table(frauen[[var]])))
+}
+
+```
+```{r}
+# Filtern der Frauen, die in einer der Variablen die Antwort "1" haben
+frauen_1 <- frauen %>%
+  filter(dicriminacion_1 == 1 | dicriminacion_2 == 1 | dicriminacion_3 == 1 |
+         dicriminacion_4 == 1 | dicriminacion_5 == 1 | dicriminacion_6 == 1)
+
+# Anzeigen der ersten Zeilen der gefilterten Daten
+head(frauen_1)
+
+```
+
+
+```{r}
+# Erstellen eines Balkendiagramms für jede gefilterte Variable
+par(mfrow = c(2, 3))  # Anordnung der Diagramme in einem 2x3 Raster
+
+for (var in c("dicriminacion_1", "dicriminacion_2", "dicriminacion_3", 
+              "dicriminacion_4", "dicriminacion_5", "dicriminacion_6")) {
+  barplot(table(frauen_1[[var]]), 
+          main = paste("Verteilung von", var),
+          col = c("lightblue", "salmon"),
+          xlab = "Kategorie", 
+          ylab = "Häufigkeit", 
+          names.arg = c("0", "1"))
+}
+
+```
+
+```{r}
+# Variablen, die du vergleichen möchtest
+variables <- c("dicriminacion_1", "dicriminacion_2", "dicriminacion_3", 
+               "dicriminacion_4", "dicriminacion_5", "dicriminacion_6")
+
+# Berechne die Häufigkeit der '1'-Werte für jede Variable
+freq_1 <- sapply(variables, function(var) sum(frauen[[var]] == 1, na.rm = TRUE))
+freq_0 <- sapply(variables, function(var) sum(frauen[[var]] == 0, na.rm = TRUE))
+
+# Erstelle eine Matrix, die die Häufigkeiten der 0 und 1 Werte enthält
+freq_matrix <- rbind(freq_0, freq_1)
+
+# Berechne den maximalen Wert der Häufigkeiten, um den Y-Achsenbereich festzulegen
+max_freq <- max(freq_matrix, na.rm = TRUE)
+
+# Plotting des gruppierten Balkendiagramms
+barplot(freq_matrix, 
+        beside = TRUE,  # Nebeneinander darstellen
+        col = c("lightblue", "salmon"),  # Farben für 0 und 1
+        names.arg = variables,  # Variablennamen auf der x-Achse
+        main = "Vergleich der diskriminierungsbezogenen Antworten",
+        xlab = "Variablen", 
+        ylab = "Häufigkeit",
+        legend = c("0 (Nein)", "1 (Ja)"),  # Legende
+        ylim = c(0, max_freq + 50))  # Y-Achse dynamisch basierend auf den Häufigkeiten
+
+
+```
+```{r}
+# Variablen, die du vergleichen möchtest
+variables <- c("dicriminacion_1", "dicriminacion_2", "dicriminacion_3", 
+               "dicriminacion_4", "dicriminacion_5", "dicriminacion_6")
+
+# Berechne die Häufigkeit der '1'-Werte für jede Variable
+freq_1 <- sapply(variables, function(var) sum(frauen[[var]] == 1, na.rm = TRUE))
+
+# Erstelle eine Matrix, die nur die Häufigkeiten der 1-Werte enthält
+freq_matrix <- matrix(freq_1, nrow = 1)
+
+# Berechne den maximalen Wert der Häufigkeiten, um den Y-Achsenbereich festzulegen
+max_freq <- max(freq_matrix, na.rm = TRUE)
+
+# Plotting des Balkendiagramms
+barplot(freq_matrix, 
+        beside = TRUE,  # Nebeneinander darstellen
+        col = "salmon",  # Farbe für 1
+        names.arg = variables,  # Variablennamen auf der x-Achse
+        main = "Vergleich der 'Ja' (1)-Antworten zu Diskriminierung",
+        xlab = "Variablen", 
+        ylab = "Häufigkeit der 'Ja' (1)-Antworten",
+        ylim = c(0, max_freq + 50))  # Y-Achse dynamisch basierend auf den Häufigkeiten
+
+```
+```{r}
+# Variablen, die du vergleichen möchtest
+variables <- c("dicriminacion_1", "dicriminacion_2", "dicriminacion_3", 
+               "dicriminacion_4", "dicriminacion_5", "dicriminacion_6")
+
+# Plotting der Tortendiagramme
+par(mfrow=c(2,3))  # 2 Zeilen und 3 Spalten für die Darstellung der Diagramme
+
+# Schleife durch jede Variable und Erstellen eines Tortendiagramms
+for (var in variables) {
+  # Berechne die Häufigkeit der '1'-Werte und der anderen Werte (nicht 1)
+  freq_1 <- sum(frauen[[var]] == 1, na.rm = TRUE)
+  freq_other <- sum(frauen[[var]] != 1, na.rm = TRUE)
+  
+  # Erstelle das Tortendiagramm
+  pie(c(freq_1, freq_other), 
+      labels = c(paste("Ja (1):", freq_1), paste("Andere:", freq_other)), 
+      col = c("salmon", "lightblue"), 
+      main = paste("Verteilung für", var))
+}
+
+```
+
+
+```{r}
+# Erstelle eine Liste mit den Variablen
+variablen <- frauen[, c("dicriminacion_1", 
+                                             "dicriminacion_2", 
+                                             "dicriminacion_3", 
+                                             "dicriminacion_4", 
+                                             "dicriminacion_5", 
+                                             "dicriminacion_6")]
+
+# Häufigkeitstabellen für jede Variable erstellen
+lapply(variablen, table)
+
+```
+```{r}
+# Korrelation zwischen den Variablen
+
+# Numerische Werte für die Variablen sicherstellen
+variablen_num <- as.data.frame(lapply(variablen, as.numeric))
+
+# Paarweise Kreuztabellen
+install.packages("gmodels")
+
+library(gmodels)
+for (i in 1:(ncol(variablen_num) - 1)) {
+  for (j in (i + 1):ncol(variablen_num)) {
+    cat("Kreuztabelle:", colnames(variablen_num)[i], "vs", colnames(variablen_num)[j], "\n")
+    CrossTable(variablen_num[, i], variablen_num[, j])
+  }
+}
+
+cor(variablen_num)
+library(corrplot)
+corrplot(cor(variablen_num), method = "circle")
+
+```
+
+
+
+
+
+
